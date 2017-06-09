@@ -64,6 +64,22 @@ optparser.add_option(
 )
 opts = optparser.parse_args()[0]
 
+
+# Model parameters
+Model_parameters = OrderedDict()
+Model_parameters['vocab_size'] = opts.vocab_size
+Model_parameters['embedding_dim'] = opts.embedding_dim
+Model_parameters['hidden_dim'] = opts.hidden_dim
+Model_parameters['tagset_size'] = tagset_size
+Model_parameters['lower'] = opts.lower == 1
+Model_parameters['decode_method'] = opts.decode_method
+Model_parameters['loss_function'] = opts.loss_function
+Model_parameters['freeze'] = opts.freeze
+
+
+#model = LstmModel.LSTMTagger(Model_parameters)
+model = LstmCrfModel.BiLSTM_CRF(Model_parameters)
+
 # Parse parameters
 Parse_parameters = OrderedDict()
 Parse_parameters['lower'] = opts.lower == 1
@@ -88,20 +104,6 @@ train_data = load_dataset(Parse_parameters, opts.train, dictionaries)
 dev_data = load_dataset(Parse_parameters, opts.dev, dictionaries)
 
 
-# Model parameters
-Model_parameters = OrderedDict()
-Model_parameters['vocab_size'] = opts.vocab_size
-Model_parameters['embedding_dim'] = opts.embedding_dim
-Model_parameters['hidden_dim'] = opts.hidden_dim
-Model_parameters['tagset_size'] = tagset_size
-Model_parameters['lower'] = opts.lower == 1
-Model_parameters['decode_method'] = opts.decode_method
-Model_parameters['loss_function'] = opts.loss_function
-Model_parameters['freeze'] = opts.freeze
-
-
-#model = LstmModel.LSTMTagger(Model_parameters)
-model = LstmCrfModel.BiLSTM_CRF(Model_parameters)
 optimizer = optim.SGD(model.parameters(), lr=0.01, weight_decay=1e-4)
 
 # If using pre-train, we need to initialize word-embedding layer
